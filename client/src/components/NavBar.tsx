@@ -17,6 +17,8 @@ export function NavBar() {
         </NavLink>
         <NavLink to="/portfolio">Portfolio</NavLink>
         <NavLink to="/leaderboard">Leaderboard</NavLink>
+        <NavLink to="/advice">Advice</NavLink>
+        <NavLink to="/crisis">Crisis Mode</NavLink>
       </nav>
       <div className="navbar-status">
         <span className={`status-dot ${connected ? "live" : "offline"}`} />

@@ -6,6 +6,8 @@ import { authRouter } from "./routes/auth.js";
 import { marketRouter } from "./routes/market.js";
 import { tradingRouter } from "./routes/trading.js";
 import { leaderboardRouter } from "./routes/leaderboard.js";
+import { adviceRouter } from "./routes/advice.js";
+import { scenarioRouter } from "./routes/scenario.js";
 import { marketEngine } from "./market/engine.js";
 import { attachWebSocket } from "./ws/index.js";
 
@@ -18,6 +20,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/market", marketRouter);
 app.use("/api/trading", tradingRouter);
 app.use("/api/leaderboard", leaderboardRouter);
+app.use("/api/advice", adviceRouter);
+app.use("/api/scenario", scenarioRouter);
 
 const server = http.createServer(app);
 attachWebSocket(server);

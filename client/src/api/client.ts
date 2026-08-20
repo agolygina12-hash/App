@@ -57,6 +57,16 @@ export const api = {
       body: JSON.stringify({ symbol, side, quantity }),
     }),
   leaderboard: () => request<LeaderboardEntry[]>("/leaderboard"),
+  advice: () => request<{ tips: AdviceTip[] }>("/advice"),
+  scenarioList: () => request<ScenarioSummary[]>("/scenario/list"),
+  scenarioStart: (id: string) => request<{ ok: true }>(`/scenario/${id}/start`, { method: "POST" }),
+  scenarioStop: () => request<{ ok: true }>("/scenario/stop", { method: "POST" }),
+  scenarioState: () => request<ScenarioState>("/scenario/state"),
+  scenarioOrder: (symbol: string, side: "BUY" | "SELL", quantity: number) =>
+    request<{ ok: true; price: number }>("/scenario/orders", {
+      method: "POST",
+      body: JSON.stringify({ symbol, side, quantity }),
+    }),
 };
 
 export { ApiError };
@@ -111,4 +121,43 @@ export interface LeaderboardEntry {
   username: string;
   netWorth: number;
   returnPct: number;
+}
+
+export interface AdviceTip {
+  id: string;
+  severity: "warning" | "positive" | "info";
+  title: string;
+  message: string;
+}
+
+export interface ScenarioSummary {
+  id: string;
+  name: string;
+  dateRange: string;
+  description: string;
+  peakToTroughPct: number;
+  durationDays: number;
+}
+
+export interface ScenarioEvent {
+  day: number;
+  date: string;
+  title: string;
+}
+
+export interface ScenarioState {
+  scenario: {
+    id: string;
+    name: string;
+    dateRange: string;
+    description: string;
+    peakToTroughPct: number;
+  };
+  simDay: number;
+  progress: number;
+  finished: boolean;
+  currentDate: string;
+  tickers: Ticker[];
+  events: ScenarioEvent[];
+  portfolio: Portfolio;
 }

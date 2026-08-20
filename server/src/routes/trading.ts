@@ -3,6 +3,7 @@ import { z } from "zod";
 import { db } from "../db/index.js";
 import { marketEngine } from "../market/engine.js";
 import { requireAuth, type AuthedRequest } from "../middleware/auth.js";
+import { getPortfolio } from "../trading/portfolio.js";
 
 export const tradingRouter = Router();
 tradingRouter.use(requireAuth);
@@ -86,32 +87,7 @@ tradingRouter.post("/orders", (req: AuthedRequest, res) => {
 });
 
 tradingRouter.get("/portfolio", (req: AuthedRequest, res) => {
-  const userId = req.userId!;
-  const user = db.prepare("SELECT cash FROM users WHERE id = ?").get(userId) as { cash: number };
-  const holdings = db
-    .prepare("SELECT symbol, quantity, avg_cost FROM holdings WHERE user_id = ?")
-    .all(userId) as { symbol: string; quantity: number; avg_cost: number }[];
-
-  const positions = holdings.map((h) => {
-    const price = marketEngine.getLatest(h.symbol)?.price ?? h.avg_cost;
-    const marketValue = Math.round(price * h.quantity * 100) / 100;
-    const costBasis = Math.round(h.avg_cost * h.quantity * 100) / 100;
-    return {
-      symbol: h.symbol,
-      quantity: h.quantity,
-      avgCost: h.avg_cost,
-      price,
-      marketValue,
-      costBasis,
-      unrealizedPnl: Math.round((marketValue - costBasis) * 100) / 100,
-      unrealizedPnlPct: costBasis > 0 ? Math.round(((marketValue - costBasis) / costBasis) * 10000) / 100 : 0,
-    };
-  });
-
-  const holdingsValue = positions.reduce((sum, p) => sum + p.marketValue, 0);
-  const netWorth = Math.round((user.cash + holdingsValue) * 100) / 100;
-
-  res.json({ cash: user.cash, holdingsValue: Math.round(holdingsValue * 100) / 100, netWorth, positions });
+  res.json(getPortfolio(req.userId!));
 });
 
 tradingRouter.get("/orders", (req: AuthedRequest, res) => {

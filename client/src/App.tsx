@@ -7,6 +7,8 @@ import { RegisterPage } from "./pages/RegisterPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { PortfolioPage } from "./pages/PortfolioPage";
 import { LeaderboardPage } from "./pages/LeaderboardPage";
+import { AdvicePage } from "./pages/AdvicePage";
+import { CrisisPage } from "./pages/CrisisPage";
 import "./App.css";
 
 function ProtectedLayout({ children }: { children: React.ReactNode }) {
@@ -57,6 +59,22 @@ function AppRoutes() {
         element={
           <ProtectedLayout>
             <LeaderboardPage />
+          </ProtectedLayout>
+        }
+      />
+      <Route
+        path="/advice"
+        element={
+          <ProtectedLayout>
+            <AdvicePage />
+          </ProtectedLayout>
+        }
+      />
+      <Route
+        path="/crisis"
+        element={
+          <ProtectedLayout>
+            <CrisisPage />
           </ProtectedLayout>
         }
       />
